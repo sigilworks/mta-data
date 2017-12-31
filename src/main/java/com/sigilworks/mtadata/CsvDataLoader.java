@@ -18,34 +18,16 @@ public class CsvDataLoader {
 
     public static void main(String[] args) throws Exception {
         log("Loading data from %s...", RAW_TURNSTILE_DATA.getName());
-        long startTime = System.currentTimeMillis();
+        final long startTime = System.currentTimeMillis();
 
         // process file into individual rows
         final List<String> rows = getLines(RAW_TURNSTILE_DATA);
-
-        // parse fields in each row
-        final List<AuditEntry> entries = new ArrayList<>(rows.size());
-
-        for (String row : rows) {
-            final String[] fields = row.split(",");
-            final AuditEntry entry = new AuditEntry(
-                fields[0],
-                fields[1],
-                fields[2],
-                fields[3],
-                fields[4],
-                fields[5],
-                fields[6],
-                fields[7],
-                fields[8],
-                fields[9],
-                fields[10]
-            );
-            entries.add(entry);
-        }
+        final List<AuditEntry> entries = getAuditEntries(rows);
 
         log("Entries found: %d", entries.size());
         log("Data loaded in %d ms.", (System.currentTimeMillis() - startTime));
+
+        log("StationService cache ready.");
     }
 
     private static List<String> getLines(File file) throws IOException {
@@ -65,7 +47,31 @@ public class CsvDataLoader {
         return lines;
     }
 
-    private static void log(String message, Object ...args) {
+    private static List<AuditEntry> getAuditEntries(List<String> rows) {
+        // parse fields in each row
+        final List<AuditEntry> entries = new ArrayList<>(rows.size());
+
+        for (String row : rows) {
+            final String[] fields = row.split(",");
+            final AuditEntry entry = new AuditEntry(
+                    fields[0],
+                    fields[1],
+                    fields[2],
+                    fields[3],
+                    fields[4],
+                    fields[5],
+                    fields[6],
+                    fields[7],
+                    fields[8],
+                    fields[9],
+                    fields[10]
+            );
+            entries.add(entry);
+        }
+        return entries;
+    }
+
+    private static void log(String message, Object... args) {
         System.out.println("[" + LocalDateTime.now() + "] " + String.format(message, args));
     }
 }

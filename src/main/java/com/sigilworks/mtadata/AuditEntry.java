@@ -2,8 +2,8 @@ package com.sigilworks.mtadata;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * User: tj
@@ -28,7 +28,7 @@ public class AuditEntry {
             this.remoteUnit = remoteUnit;
             this.scp = scp;
 
-            this.station = new StationInfo(station, parseLineNames(lineNames), Division.valueOf(division));
+            this.station = StationService.getStation(station, parseLineNames(lineNames), Division.valueOf(division));
 
             this.date = parseDate(formattedDate);
             this.time = parseTime(formattedTime);
@@ -52,8 +52,8 @@ public class AuditEntry {
             return LocalTime.of(hour, min);
         }
 
-        private List<SubwayLine> parseLineNames(String lineString) {
-            final List<SubwayLine> lineNames = new ArrayList<>();
+        private Set<SubwayLine> parseLineNames(String lineString) {
+            final Set<SubwayLine> lineNames = new HashSet<>();
             final String[] lines = lineString.split("");
             for (String line : lines) {
                 lineNames.add(SubwayLine.fromTag(line));
